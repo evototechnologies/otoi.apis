@@ -7,7 +7,7 @@ from app.models.address import Address
 
 person_blueprint = Blueprint("person", __name__, url_prefix="/persons")
 
-@person_blueprint.route("/", methods=["GET"])
+@person_blueprint.route("/", methods=["GET","OPTIONS"])
 def get_persons():
     """
     Fetch a list of persons with advanced features like filtering, sorting, and pagination.
@@ -130,7 +130,7 @@ def get_persons():
         }
         for person in persons
     ]
-    return jsonify({"total": pagination.total, "pages": pagination.pages, "persons": result})
+    return jsonify({"total": pagination.total, "pages": pagination.pages, "data": result})
 
 
 @person_blueprint.route("/", methods=["POST"])
