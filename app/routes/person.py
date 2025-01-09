@@ -4,6 +4,7 @@ from app.models.person import Person
 from app.models.persontype import PersonType
 from app.models.personaddress import PersonAddress
 from app.models.address import Address
+from sqlalchemy import or_
 
 person_blueprint = Blueprint("person", __name__, url_prefix="/persons")
 
@@ -92,17 +93,23 @@ def get_persons():
                         type: string
                         description: Email address
     """
+
+    
     query = Person.query
 
-    # Filtering
-    if "first_name" in request.args:
-        query = query.filter(Person.first_name.ilike(f"%{request.args['first_name']}%"))
-    if "last_name" in request.args:
-        query = query.filter(Person.last_name.ilike(f"%{request.args['last_name']}%"))
+    # Filtering 
+    if "filter[name]" in request.args:
+        filter_value = request.args.get("filter[name]", "")
+        query = query.filter(
+          or_(
+              Person.first_name.ilike(f"%{filter_value}%"),
+              Person.last_name.ilike(f"%{filter_value}%"),
+              Person.email.ilike(f"%{filter_value}%")
+          )
+        )
+        
     if "mobile" in request.args:
-        query = query.filter(Person.mobile.ilike(f"%{request.args['mobile']}%"))
-    if "email" in request.args:
-        query = query.filter(Person.email.ilike(f"%{request.args['email']}%"))
+        query = query.filter(Person.mobile.ilike(f"%{request.args['mobile']}%"))   
 
     # Sorting
     sort = request.args.get("sort", "id")
@@ -114,7 +121,7 @@ def get_persons():
 
     # Pagination
     page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 10))
+    per_page = int(request.args.get("items_per_page", 10))
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     persons = pagination.items
 
@@ -130,7 +137,7 @@ def get_persons():
         }
         for person in persons
     ]
-    return jsonify({"total": pagination.total, "pages": pagination.pages, "data": result})
+    return jsonify({"pages": pagination.pages, "data": result , "pagination": { "total" : pagination.total}})
 
 
 @person_blueprint.route("/", methods=["POST"])
