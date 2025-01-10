@@ -107,9 +107,25 @@ def get_persons():
               Person.email.ilike(f"%{filter_value}%")
           )
         )
-        
+    if "query" in request.args:
+        query_value = request.args.get("query", "")
+        query = query.filter(
+          or_(
+              Person.first_name.ilike(f"%{query_value}%"),
+              Person.last_name.ilike(f"%{query_value}%"),
+              Person.email.ilike(f"%{query_value}%"),
+              Person.gst.ilike(f"%{query_value}%"),
+              Person.mobile.ilike(f"%{query_value}%"),
+          )
+        )
+            
     if "mobile" in request.args:
-        query = query.filter(Person.mobile.ilike(f"%{request.args['mobile']}%"))   
+        query = query.filter(Person.mobile.ilike(f"%{request.args['mobile']}%"))
+
+    if "person_type" in request.args:
+        value = request.args['person_type']
+        person_type = int(request.args['person_type'])
+        query = query.filter(Person.person_type_id == person_type)
 
     # Sorting
     sort = request.args.get("sort", "id")
