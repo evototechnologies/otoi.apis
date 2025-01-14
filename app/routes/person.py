@@ -1,9 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.extensions import db
-from app.models.person import Person
-from app.models.persontype import PersonType
-from app.models.personaddress import PersonAddress
-from app.models.address import Address
+from app.models.person import Person, PersonType, PersonAddress
+from app.models.common import Address
 from sqlalchemy import or_
 
 person_blueprint = Blueprint("person", __name__, url_prefix="/persons")
@@ -94,7 +92,6 @@ def get_persons():
                         description: Email address
     """
 
-    
     query = Person.query
 
     # Filtering 
