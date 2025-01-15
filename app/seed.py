@@ -6,6 +6,32 @@ from app.models.common import Address
 from app.models.person import PersonType
 from app.models.business import BusinessType, IndustryType, BusinessRegistrationType
 from datetime import datetime
+from sqlalchemy import create_engine, text
+
+def create_database(app):
+    """
+    Create the database if it does not exist.
+    """
+    database_uri = app.config['SQLALCHEMY_DATABASE_URI']
+    base_uri = database_uri.rsplit('/', 1)[0]  # Connect to the server (without the database)
+    db_name = database_uri.rsplit('/', 1)[1]   # Extract database name
+
+    # Connect with AUTOCOMMIT isolation level
+    engine = create_engine(base_uri, isolation_level="AUTOCOMMIT")
+
+    with engine.connect() as connection:
+        try:
+            # Check if the database exists
+            query = text("SELECT 1 FROM pg_database WHERE datname = :db_name")
+            result = connection.execute(query, {"db_name": db_name})
+            if not result.fetchone():
+                # Create the database if it doesn't exist
+                connection.execute(text(f"CREATE DATABASE {db_name}"))
+                print(f"Database '{db_name}' created successfully.")
+            else:
+                print(f"Database '{db_name}' already exists.")
+        except Exception as e:
+            print(f"Error while creating database: {e}")
 
 def seed_data(app: Flask):
     with app.app_context():
