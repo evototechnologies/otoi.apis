@@ -13,7 +13,7 @@ class BaseMixin:
 class Address(db.Model):
     __tablename__ = "addresses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     address1 = Column(String(255), nullable=False)
     address2 = Column(String(255), nullable=True)
     city = Column(String(100), nullable=False)

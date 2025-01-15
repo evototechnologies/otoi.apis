@@ -7,7 +7,7 @@ from app.models.common import BaseMixin
 class LeadStatusType(BaseMixin, db.Model):
     __tablename__ = "lead_status_types"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
     description = Column(String(255), nullable=True)
 
@@ -18,7 +18,7 @@ class LeadStatusType(BaseMixin, db.Model):
 class LeadStatus(BaseMixin, db.Model):
     __tablename__ = "lead_statuses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     lead_id = Column(Integer, ForeignKey("leads.id", ondelete="CASCADE"), nullable=False)
     lead_status_type_id = Column(Integer, ForeignKey("lead_status_types.id", ondelete="CASCADE"), nullable=False)
 
@@ -30,7 +30,7 @@ class LeadStatus(BaseMixin, db.Model):
 class FollowUp(BaseMixin, db.Model):
     __tablename__ = "followups"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     lead_id = Column(Integer, ForeignKey("leads.id", ondelete="CASCADE"), nullable=False)
     follow_up_date = Column(DateTime, nullable=False)
     notes = Column(Text, nullable=True)
@@ -42,7 +42,7 @@ class FollowUp(BaseMixin, db.Model):
 class Lead(BaseMixin, db.Model):
     __tablename__ = "leads"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
     phone = Column(String(15), nullable=True)

@@ -6,7 +6,7 @@ from app.models.common import BaseMixin, Address
 class Person(BaseMixin, db.Model):
     __tablename__ = "persons"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
     person_type_id = Column(Integer, ForeignKey("person_types.id", ondelete="SET NULL"), nullable=True)
@@ -21,7 +21,7 @@ class Person(BaseMixin, db.Model):
 class PersonAddress(BaseMixin,db.Model):
     __tablename__ = "person_addresses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     person_id = Column(Integer, ForeignKey("persons.id", ondelete="CASCADE"), nullable=False)
     address_id = Column(Integer, ForeignKey("addresses.id", ondelete="CASCADE"), nullable=False)
 
@@ -33,7 +33,7 @@ class PersonAddress(BaseMixin,db.Model):
 class PersonType(BaseMixin, db.Model):
     __tablename__ = "person_types"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
 
     # Relationships

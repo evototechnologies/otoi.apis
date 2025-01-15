@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token
 from app.models.user import User
+from flask import g
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -42,8 +43,16 @@ def login():
     password = data.get("password")
 
     user = User.query.filter_by(username=username).first()
+    # Access the id of the first business
+    business_id = user.businesses[0].id if user.businesses else None  # Handle empty business list
     if user and user.check_password(password):
-        token = create_access_token(identity={"username": user.username, "role": user.role.name})
+        token = create_access_token(identity=str(user.id), additional_claims={
+            "username": user.username,
+            "role": user.role.name,
+            "business_id": business_id
+        })
+        g.user_id = user.id
+        g.business_id = business_id
         return jsonify({"access_token": token}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401

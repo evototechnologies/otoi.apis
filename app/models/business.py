@@ -6,13 +6,13 @@ from app.models.associations import user_business
 
 class BusinessType(db.Model):
     __tablename__ = "business_types"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
 
 
 class IndustryType(db.Model):
     __tablename__ = "industry_types"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
 
     # Relationships
@@ -21,7 +21,7 @@ class IndustryType(db.Model):
 
 class BusinessRegistrationType(db.Model):
     __tablename__ = "business_registration_types"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
 
     # Relationships
@@ -31,7 +31,7 @@ class BusinessRegistrationType(db.Model):
 class Business(db.Model):
     __tablename__ = "businesses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False, unique=True)
     phone_number = Column(String(15), nullable=False, unique=True)
     email = Column(String(255), nullable=False, unique=True)

@@ -10,6 +10,11 @@ from datetime import datetime
 def seed_data(app: Flask):
     with app.app_context():
 
+        print("Clearing database...")
+        db.drop_all()  # Drop all tables
+        db.create_all()  # Recreate all tables
+        print("Database cleared and tables recreated.")
+
         # Add a default super admin user
         admin_role = Role.query.filter_by(name="Admin").first()
         admin = User()
@@ -21,7 +26,6 @@ def seed_data(app: Flask):
             admin.created_at = datetime.utcnow()
             admin.created_by = admin.id
             admin.set_password("admin123")  # Change password in production!
-            db.session.add(admin)
 
             address = Address(address1="477-478 TF, SEC 35C", city="CHANDIGARH", state="CHANDIGARH", country="India", pin="160036")
             
@@ -32,6 +36,10 @@ def seed_data(app: Flask):
             business.created_at=datetime.utcnow()
             business.created_by=admin.id
             business.address=address
+
+            admin.businesses.append(business) # Add business to user
+
+            db.session.add(admin)
             db.session.add(business) 
         
             print("default user created.")

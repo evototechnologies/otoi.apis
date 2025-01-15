@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.extensions import db
 from app.models.person import Person, PersonType, PersonAddress
 from app.models.common import Address
+from app.utils.stamping import set_created_fields, set_updated_fields, set_business
 from sqlalchemy import or_
 
 person_blueprint = Blueprint("person", __name__, url_prefix="/persons")
@@ -174,6 +175,8 @@ def create_person():
         gst=data.get("gst"),
         person_type_id=data["person_type_id"],
     )
+    set_created_fields(person)
+    set_business(person)
     db.session.add(person)
     db.session.commit()
 

@@ -7,7 +7,7 @@ from app.models.common import BaseMixin
 class ItemType(BaseMixin, db.Model):
     __tablename__ = "item_types"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
 
     # Relationships
@@ -17,7 +17,7 @@ class ItemType(BaseMixin, db.Model):
 class ItemCategory(BaseMixin, db.Model):
     __tablename__ = "item_categories"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True)
 
     # Relationships
@@ -27,7 +27,7 @@ class ItemCategory(BaseMixin, db.Model):
 class MeasuringUnit(BaseMixin, db.Model):
     __tablename__ = "measuring_units"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
 
     # Relationships
@@ -37,7 +37,7 @@ class MeasuringUnit(BaseMixin, db.Model):
 class Item(BaseMixin, db.Model):
     __tablename__ = "items"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     item_type_id = Column(Integer, ForeignKey("item_types.id", ondelete="CASCADE"), nullable=False)
     category_id = Column(Integer, ForeignKey("item_categories.id", ondelete="CASCADE"), nullable=False)
     measuring_unit_id = Column(Integer, ForeignKey("measuring_units.id", ondelete="CASCADE"), nullable=False)
@@ -61,7 +61,7 @@ class Item(BaseMixin, db.Model):
 class ItemImage(BaseMixin, db.Model):
     __tablename__ = "item_images"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
     image = Column(LargeBinary, nullable=False)
 
