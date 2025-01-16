@@ -19,9 +19,9 @@ def login():
           schema:
             type: object
             properties:
-              username:
+              email:
                 type: string
-                example: "admin"
+                example: "info@evototechnologies.com"
               password:
                 type: string
                 example: "admin123"
@@ -39,10 +39,10 @@ def login():
         description: Invalid credentials
     """
     data = request.json
-    username = data.get("username")
+    email = data.get("email")
     password = data.get("password")
-
-    user = User.query.filter_by(username=username).first()
+ 
+    user = User.query.filter_by(email=email).first()
     # Access the id of the first business
     business_id = user.businesses[0].id if user.businesses else None  # Handle empty business list
     if user and user.check_password(password):
@@ -53,6 +53,6 @@ def login():
         })
         g.user_id = user.id
         g.business_id = business_id
-        return jsonify({"access_token": token}), 200
+        return jsonify({"access_token": token , "token_type":"Bearer"}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401

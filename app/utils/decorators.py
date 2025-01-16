@@ -15,7 +15,7 @@ def role_required(required_roles):
         def wrapper(*args, **kwargs):
             verify_jwt_in_request()
             identity = get_jwt_identity()
-            user = User.query.filter_by(username=identity["username"]).first()
+            user = User.query.filter_by(id=int(identity)).first()
             
             if not user or user.role.name not in required_roles:
                 return jsonify({"error": "Access forbidden: insufficient role"}), 403
