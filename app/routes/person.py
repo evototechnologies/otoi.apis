@@ -10,18 +10,18 @@ person_blueprint = Blueprint("person", __name__, url_prefix="/persons")
 @person_blueprint.route("/", methods=["GET","OPTIONS"])
 def get_persons():
     """
-    Fetch a list of persons with advanced features like filtering, sorting, and pagination.
+    Fetch a list of persons with filtering, sorting, and pagination.
     ---
     parameters:
-      - name: first_name
+      - name: filter[name]
         in: query
-        description: Filter by first name
+        description: Filter by name (first_name, last_name, or email)
         required: false
         schema:
           type: string
-      - name: last_name
+      - name: query
         in: query
-        description: Filter by last name
+        description: Search by first_name, last_name, email, gst, or mobile
         required: false
         schema:
           type: string
@@ -31,12 +31,12 @@ def get_persons():
         required: false
         schema:
           type: string
-      - name: email
+      - name: person_type
         in: query
-        description: Filter by email address
+        description: Filter by person type ID
         required: false
         schema:
-          type: string
+          type: integer
       - name: sort
         in: query
         description: Comma-separated field names for sorting (e.g., 'first_name,-email')
@@ -50,7 +50,7 @@ def get_persons():
         schema:
           type: integer
           default: 1
-      - name: per_page
+      - name: items_per_page
         in: query
         description: "Number of records per page (default: 10)"
         required: false
@@ -65,13 +65,16 @@ def get_persons():
             schema:
               type: object
               properties:
-                total:
-                  type: integer
-                  description: Total number of persons
                 pages:
                   type: integer
-                  description: Total number of pages
-                persons:
+                  description: Total pages
+                pagination:
+                  type: object
+                  properties:
+                    total:
+                      type: integer
+                      description: Total number of records
+                data:
                   type: array
                   items:
                     type: object
@@ -91,6 +94,12 @@ def get_persons():
                       email:
                         type: string
                         description: Email address
+                      gst:
+                        type: string
+                        description: GST number
+                      person_type:
+                        type: string
+                        description: Person type
     """
 
     query = Person.query
@@ -158,6 +167,55 @@ def get_persons():
 def create_person():
     """
     Create a new person.
+    ---
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+                description: First name of the person
+                example: John
+              last_name:
+                type: string
+                description: Last name of the person
+                example: Doe
+              mobile:
+                type: string
+                description: Mobile number
+                example: 1234567890
+              email:
+                type: string
+                description: Email address
+                example: john.doe@example.com
+              gst:
+                type: string
+                description: GST number (optional)
+                example: 12345ABCDE
+              person_type_id:
+                type: integer
+                description: ID of the person type
+                example: 1
+    responses:
+      201:
+        description: Person created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Person created successfully
+                id:
+                  type: integer
+                  description: Created person ID
+                  example: 1
+      400:
+        description: Invalid person type
     """
     data = request.json
 
@@ -187,6 +245,60 @@ def create_person():
 def update_person(person_id):
     """
     Update an existing person's details.
+    ---
+    parameters:
+      - name: person_id
+        in: path
+        description: ID of the person to update
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              first_name:
+                type: string
+                description: First name of the person
+                example: John
+              last_name:
+                type: string
+                description: Last name of the person
+                example: Doe
+              mobile:
+                type: string
+                description: Mobile number
+                example: 1234567890
+              email:
+                type: string
+                description: Email address
+                example: john.doe@example.com
+              gst:
+                type: string
+                description: GST number (optional)
+                example: 12345ABCDE
+              person_type_id:
+                type: integer
+                description: ID of the person type (optional)
+                example: 1
+    responses:
+      200:
+        description: Person updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Person updated successfully
+      400:
+        description: Invalid person type
+      404:
+        description: Person not found
     """
     data = request.json
 
@@ -213,6 +325,27 @@ def update_person(person_id):
 def delete_person(person_id):
     """
     Delete a person by ID.
+    ---
+    parameters:
+      - name: person_id
+        in: path
+        description: ID of the person to delete
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Person deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Person deleted successfully
+      404:
+        description: Person not found
     """
     person = Person.query.get_or_404(person_id)
     db.session.delete(person)
