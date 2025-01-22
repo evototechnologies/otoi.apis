@@ -21,6 +21,7 @@ def extract_jwt_info():
         g.user_id = get_jwt_identity()  # Extract user_id (identity)
         claims = get_jwt()              # Extract claims from token
         g.business_id = claims.get("business_id")  # Extract business_id from claims
+        g.role = claims.get("role")  # Extract role from claims
     except Exception as e:
         logging.error(f"JWT Verification Error: {e}")
         g.user_id = None

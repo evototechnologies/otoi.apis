@@ -43,9 +43,10 @@ def login():
     password = data.get("password")
  
     user = User.query.filter_by(email=email).first()
-    # Access the id of the first business
-    business_id = user.businesses[0].id if user.businesses else None  # Handle empty business list
+    
     if user and user.check_password(password):
+        # Access the id of the first business
+        business_id = user.businesses[0].id if user.businesses else None  # Handle empty business list
         token = create_access_token(identity=str(user.id), additional_claims={
             "username": user.username,
             "role": user.role.name,

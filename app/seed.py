@@ -42,7 +42,11 @@ def seed_data(app: Flask):
         print("Database cleared and tables recreated.")
 
         # Add a default super admin user
-        admin_role = Role.query.filter_by(name="Admin").first()
+        if not Role.query.filter_by(name="Admin").first():
+            admin_role = Role(name="Admin")
+            db.session.add(admin_role)
+        else:
+            admin_role = Role.query.filter_by(name="Admin").first()
         admin = User()
         business = Business()
         if not User.query.filter_by(username="admin").first():
@@ -70,7 +74,7 @@ def seed_data(app: Flask):
         
             print("default user created.")
             # Define initial roles
-            roles = ["Admin", "Manager", "User"]
+            roles = ["Manager", "User"]
 
             # Add roles if not already present
             for role_name in roles:
