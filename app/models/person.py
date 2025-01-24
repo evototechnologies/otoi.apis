@@ -13,6 +13,8 @@ class Person(BaseMixin, db.Model):
     mobile = Column(String(15), nullable=False, unique=True)
     email = Column(String(255), nullable=False, unique=True)
     gst = Column(String(20), nullable=True)
+    referenced_by = Column(String(500), nullable=True)
+    
     # Relationships
     person_type = relationship("PersonType", back_populates="persons")
     addresses = relationship("PersonAddress", back_populates="person")

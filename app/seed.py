@@ -83,7 +83,7 @@ def seed_data(app: Flask):
                     role = Role(name=role_name)
                     db.session.add(role)
     
-            types = ["Customer", "Vendor", "Provider"]
+            types = ["Customer", "Vendor", "Provider", "Lead", "Employee"]
             for t in types:
                 if not PersonType.query.filter_by(name=t).first():
                     db.session.add(PersonType(name=t, business_id = business.id, created_at=datetime.utcnow(), created_by=admin.id))
